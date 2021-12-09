@@ -22,7 +22,7 @@
                 </div>
               </ion-col>
               <ion-col>
-                <div class="ion-text-end">
+                <div class="ion-text-end" id="score">
                   Time Left: {{ timeLeft }}
                 </div>
               </ion-col>
@@ -102,6 +102,13 @@ export default defineComponent({
           .fromTo('transform', 'scale(2.0)', 'scale(1.0)')
       animation.play();
     },
+    blink () {
+      const animation = createAnimation()
+      animation.addElement(document.getElementById('score'))
+          .duration(500)
+          .fromTo('opacity', '0', '1')
+      animation.play();
+    },
     async info() {
       const alert = await alertController
           .create({
@@ -114,6 +121,7 @@ export default defineComponent({
       await alert.present();
     },
     tap () {
+      this.blink()
       this.bounce()
       this.score++
       if (!this.started) {
