@@ -32,17 +32,29 @@
       </ion-header>
     
       <div id="container">
-        <ion-button color="primary" @click="tap">Tap Me </ion-button>
+        <ion-button id="tapButton" ref = "tapButton" color="primary" @click="tap">Tap Me </ion-button>
       </div>
 
     </ion-content>
   </ion-page>
 </template>
 
-<script lang="ts">
-import { toastController, alertController,IonContent,IonCol,IonRow,IonGrid, IonHeader, IonPage, IonTitle, IonToolbar, IonButtons, IonButton, IonIcon } from '@ionic/vue';
+<script>
+import {
+  alertController,
+  IonButton,
+  IonButtons, IonCol,
+  IonContent, IonGrid,
+  IonHeader,
+  IonIcon,
+  IonPage, IonRow,
+  IonTitle,
+  IonToolbar, toastController
+} from '@ionic/vue';
 import { defineComponent } from 'vue';
-import { informationCircleOutline } from  'ionicons/icons';
+import { informationCircleOutline } from "ionicons/icons";
+import { createAnimation } from '@ionic/vue';
+const INITIAL_TIME = 60
 export default defineComponent({
   name: 'Home',
   components: {
@@ -58,46 +70,65 @@ export default defineComponent({
     IonRow,
     IonCol
   },
-  setup (){
-    return{
+  setup () {
+    return {
       infoIcon: informationCircleOutline,
-      started: false
-    }                                     
+      started: false,
+      counterInterval: null,
+    }
   },
-
   data () {
-    return{
+    return {
       score: 0,
-      timeLeft:60
+      timeLeft: INITIAL_TIME
+    }
+  },
+  watch: {
+    timeLeft: function(newTimeLeft) {
+      if (newTimeLeft <= 0) {
+        this.started = false
+        this.timeLeft = INITIAL_TIME
+        clearInterval(this.counterInterval)
+        this.showResult()
+        this.score = 0
+      }
     }
   },
   methods: {
+    bounce () {
+      const animation = createAnimation()
+      animation.addElement(document.getElementById('tapButton'))
+          .duration(2000)
+          .fromTo('transform', 'scale(2.0)', 'scale(1.0)')
+      animation.play();
+    },
     async info() {
       const alert = await alertController
           .create({
         header: 'Time Figther 1.0',
         subHeader: 'Creat per Jordi Rodriguez',
         message: 'Podeu trobar el codifont a: <a href="https://github.com/jordirp/ComptadorIonic/">https://github.com/jordirp/ComptadorIonic/</a>',
-        buttons: ['Disagree', 'Agree']
+        buttons: ['OK']
       });
 
       await alert.present();
     },
-    async tap(){
+    tap () {
+      this.bounce()
       this.score++
       if (!this.started) {
-        setInterval(() => {
+        this.counterInterval = setInterval(() => {
           this.timeLeft--
-        }, 1000)
+        },1000)
         this.started = true
       }
     },
-    async showResult(){
+    async showResult() {
       const toast = await toastController.create({
-        color:'dark',
-        duration:2000,
-        message: 'Paired successfully',
-       // showCloseButton: true
+        color: 'dark',
+        duration: 2000,
+        message: `Time's Up. Your Score was ${this.score}`,
+        showCloseButton: true
       });
       await toast.present();
     }
