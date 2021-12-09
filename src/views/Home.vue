@@ -17,12 +17,12 @@
           <ion-grid>
             <ion-row>
               <ion-col>
-                <div class="ion-text-start">
+                <div class="ion-text-start" id="score">
                   Your Score: {{ score }}
                 </div>
               </ion-col>
               <ion-col>
-                <div class="ion-text-end" id="score">
+                <div class="ion-text-end" >
                   Time Left: {{ timeLeft }}
                 </div>
               </ion-col>
