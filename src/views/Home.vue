@@ -97,7 +97,7 @@ export default defineComponent({
         color:'dark',
         duration:2000,
         message: 'Paired successfully',
-        showCloseButton: true
+       // showCloseButton: true
       });
       await toast.present();
     }
