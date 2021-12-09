@@ -2,29 +2,47 @@
   <ion-page>
     <ion-header :translucent="true">
       <ion-toolbar>
-        <ion-title>Time fighter</ion-title>
+        <ion-title>Time fighter Jordi</ion-title>
+        <ion-buttons slot="primary">
+          <ion-button color="primary" fill="solid" @click="info">
+            <ion-icon :icon="infoIcon"></ion-icon>
+          </ion-button>
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
     
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
+      <ion-header class="ion-no-border ion-padding-top ion-padding-horizontal">
         <ion-toolbar>
-          <ion-title size="large">Blank</ion-t  itle>
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <div class="ion-text-start">
+                  Your Score: {{ score }}
+                </div>
+              </ion-col>
+              <ion-col>
+                <div class="ion-text-end">
+                  Time Left: {{ timeLeft }}
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
         </ion-toolbar>
       </ion-header>
     
       <div id="container">
-        <strong>YES: TODO AFEGIR EL BOTO DEL COMPTADOR</strong>
-        <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+        <ion-button color="primary" @click="tap">Tap Me </ion-button>
       </div>
+
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
+import { toastController, alertController,IonContent,IonCol,IonRow,IonGrid, IonHeader, IonPage, IonTitle, IonToolbar, IonButtons, IonButton, IonIcon } from '@ionic/vue';
 import { defineComponent } from 'vue';
-
+import { informationCircleOutline } from  'ionicons/icons';
 export default defineComponent({
   name: 'Home',
   components: {
@@ -32,7 +50,57 @@ export default defineComponent({
     IonHeader,
     IonPage,
     IonTitle,
-    IonToolbar
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonGrid,
+    IonRow,
+    IonCol
+  },
+  setup (){
+    return{
+      infoIcon: informationCircleOutline,
+      started: false
+    }                                     
+  },
+
+  data () {
+    return{
+      score: 0,
+      timeLeft:60
+    }
+  },
+  methods: {
+    async info() {
+      const alert = await alertController
+          .create({
+        header: 'Time Figther 1.0',
+        subHeader: 'Creat per Jordi Rodriguez',
+        message: 'Podeu trobar el codifont a: <a href="https://github.com/jordirp/ComptadorIonic/">https://github.com/jordirp/ComptadorIonic/</a>',
+        buttons: ['Disagree', 'Agree']
+      });
+
+      await alert.present();
+    },
+    async tap(){
+      this.score++
+      if (!this.started) {
+        setInterval(() => {
+          this.timeLeft--
+        }, 1000)
+        this.started = true
+      }
+    },
+    async showResult(){
+      const toast = await toastController.create({
+        color:'dark',
+        duration:2000,
+        message: 'Paired successfully',
+        showCloseButton: true
+      });
+      await toast.present();
+    }
   }
 });
 </script>
